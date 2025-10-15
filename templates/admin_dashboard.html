@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Admin Dashboard</h1>
+    <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
+</div>
+
+<div id="alert-container"></div>
+
+<h2 style="margin-bottom: 20px; color: #333;">All Bookings</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Restaurant</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Delivery Partner</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in bookings %}
+        <tr>
+            <td>#{{ booking.id }}</td>
+            <td>{{ booking.customer.username }}</td>
+            <td>{{ booking.restaurant_name }}</td>
+            <td>₹{{ booking.total_amount }}</td>
+            <td><span class="status-badge status-{{ booking.status }}">{{ booking.get_status_display }}</span></td>
+            <td>
+                {% if booking.delivery_partner %}
+                {{ booking.delivery_partner.username }}
+                {% else %}
+                <span style="color: #999;">Not assigned</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if booking.status == 'pending' %}
+                <button class="btn btn-primary" onclick="openAssignModal({{ booking.id }})">Assign</button>
+                {% else %}
+                -
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7" style="text-align: center; color: #999;">No bookings yet</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Assign Delivery Partner Modal -->
+<div id="assignModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Assign Delivery Partner</h2>
+            <button class="close-modal" onclick="closeAssignModal()">&times;</button>
+        </div>
+        
+        <form id="assignForm">
+            {% csrf_token %}
+            <input type="hidden" id="bookingId" name="booking_id">
+            
+            <div class="form-group">
+                <label>Select Delivery Partner</label>
+                <select name="partner_id" id="partnerId" required>
+                    <option value="">-- Select Partner --</option>
+                    {% for partner in delivery_partners %}
+                    <option value="{{ partner.id }}">{{ partner.username }} ({{ partner.userprofile.mobile }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Assign Partner</button>
+        </form>
+    </div>
+</div>
+
+<script>
+let currentBookingId = null;
+
+function openAssignModal(bookingId) {
+    currentBookingId = bookingId;
+    $('#bookingId').val(bookingId);
+    $('#assignModal').addClass('active');
+}
+
+function closeAssignModal() {
+    $('#assignModal').removeClass('active');
+    $('#assignForm')[0].reset();
+    currentBookingId = null;
+}
+
+$('#assignForm').on('submit', function(e) {
+    e.preventDefault();
+    
+    const partnerId = $('#partnerId').val();
+    
+    $.ajax({
+        url: `/admin/booking/${currentBookingId}/assign/`,
+        method: 'POST',
+        data: {
+            partner_id: partnerId,
+            csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val()
+        },
+        success: function(response) {
+            if (response.success) {
+                $('#alert-container').html(
+                    '<div class="alert alert-success">' + response.message + '</div>'
+                );
+                closeAssignModal();
+                location.reload();
+            }
+        },
+        error: function() {
+            $('#alert-container').html(
+                '<div class="alert alert-error">Failed to assign delivery partner</div>'
+            );
+        }
+    });
+});
+</script>
+{% endblock %}

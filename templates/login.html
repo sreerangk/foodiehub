@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - Food Delivery{% endblock %}
+
+{% block content %}
+<div style="max-width: 400px; margin: 50px auto;">
+    <h1 style="text-align: center; color: #667eea; margin-bottom: 30px;">Login</h1>
+    
+    <div id="alert-container"></div>
+    
+    <form id="loginForm">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Select Role</label>
+            <select name="role" id="role" required>
+                <option value="customer">Customer</option>
+                <option value="delivery">Delivery Partner</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="tel" name="mobile" id="mobile" placeholder="Enter 10 digit mobile number" required pattern="[0-9]{10}">
+        </div>
+        
+        <div class="form-group">
+            <label>OTP (Use: 1234)</label>
+            <input type="text" name="otp" id="otp" placeholder="Enter OTP" required maxlength="4">
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 16px;">
+            Login
+        </button>
+    </form>
+    
+    <p style="text-align: center; margin-top: 20px; color: #666;">
+        <a href="{% url 'index' %}" style="color: #667eea;">← Back to Home</a>
+    </p>
+</div>
+
+<script>
+$(document).ready(function() {
+    $('#loginForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        $.ajax({
+            url: '{% url "login" %}',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    window.location.href = response.redirect;
+                } else {
+                    $('#alert-container').html(
+                        '<div class="alert alert-error">' + response.error + '</div>'
+                    );
+                }
+            },
+            error: function() {
+                $('#alert-container').html(
+                    '<div class="alert alert-error">An error occurred. Please try again.</div>'
+                );
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

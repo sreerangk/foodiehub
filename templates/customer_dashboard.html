@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block title %}Customer Dashboard{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Customer Dashboard</h1>
+    <div>
+        <button class="btn btn-primary" onclick="openCreateBookingModal()">+ New Booking</button>
+        <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
+    </div>
+</div>
+
+<div id="alert-container"></div>
+
+<h2 style="margin-bottom: 20px; color: #333;">My Bookings</h2>
+
+<div id="bookings-list">
+    {% for booking in bookings %}
+    <div class="booking-card">
+        <div class="booking-header">
+            <div>
+                <h3 style="color: #667eea; margin-bottom: 5px;">Booking #{{ booking.id }}</h3>
+                <span class="status-badge status-{{ booking.status }}">{{ booking.get_status_display }}</span>
+            </div>
+            <div>
+                {% if booking.status in 'pending,assigned' %}
+                <button class="btn btn-danger" onclick="cancelBooking({{ booking.id }})">Cancel</button>
+                {% endif %}
+                {% if booking.delivery_partner and booking.status not in 'pending,cancelled,delivered' %}
+                <a href="{% url 'chat' booking.id %}" class="btn btn-success">💬 Chat</a>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="booking-info">
+            <strong>Restaurant:</strong> {{ booking.restaurant_name }}
+        </div>
+        <div class="booking-info">
+            <strong>Items:</strong> {{ booking.items }}
+        </div>
+        <div class="booking-info">
+            <strong>Delivery Address:</strong> {{ booking.delivery_address }}
+        </div>
+        <div class="booking-info">
+            <strong>Amount:</strong> ₹{{ booking.total_amount }}
+        </div>
+        {% if booking.delivery_partner %}
+        <div class="booking-info">
+            <strong>Delivery Partner:</strong> {{ booking.delivery_partner.username }}
+        </div>
+        {% endif %}
+        <div class="booking-info" style="color: #999; font-size: 12px;">
+            Created: {{ booking.created_at|date:"d M Y, h:i A" }}
+        </div>
+    </div>
+    {% empty %}
+    <div class="card" style="text-align: center; padding: 40px;">
+        <p style="color: #999; font-size: 18px;">No bookings yet. Create your first booking!</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Create Booking Modal -->
+<div id="createBookingModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Create New Booking</h2>
+            <button class="close-modal" onclick="closeCreateBookingModal()">&times;</button>
+        </div>
+        
+        <form id="createBookingForm">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Restaurant Name</label>
+                <input type="text" name="restaurant_name" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Items</label>
+                <textarea name="items" placeholder="e.g., 2x Burger, 1x Pizza, 2x Coke" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Delivery Address</label>
+                <textarea name="delivery_address" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Total Amount (₹)</label>
+                <input type="number" name="total_amount" step="0.01" min="0" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Create Booking</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function openCreateBookingModal() {
+    $('#createBookingModal').addClass('active');
+}
+
+function closeCreateBookingModal() {
+    $('#createBookingModal').removeClass('active');
+    $('#createBookingForm')[0].reset();
+}
+
+$('#createBookingForm').on('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        restaurant_name: $('input[name="restaurant_name"]').val(),
+        items: $('textarea[name="items"]').val(),
+        delivery_address: $('textarea[name="delivery_address"]').val(),
+        total_amount: $('input[name="total_amount"]').val()
+    };
+    
+    $.ajax({
+        url: '{% url "create_booking" %}',
+        method: 'POST',
+        data: JSON.stringify(formData),
+        contentType: 'application/json',
+        headers: {
+            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+        },
+        success: function(response) {
+            if (response.success) {
+                $('#alert-container').html(
+                    '<div class="alert alert-success">' + response.message + '</div>'
+                );
+                closeCreateBookingModal();
+                location.reload();
+            }
+        },
+        error: function() {
+            $('#alert-container').html(
+                '<div class="alert alert-error">Failed to create booking</div>'
+            );
+        }
+    });
+});
+
+function cancelBooking(bookingId) {
+    if (!confirm('Are you sure you want to cancel this booking?')) {
+        return;
+    }
+    
+    $.ajax({
+        url: `/customer/booking/${bookingId}/cancel/`,
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        success: function(response) {
+            if (response.success) {
+                $('#alert-container').html(
+                    '<div class="alert alert-success">' + response.message + '</div>'
+                );
+                location.reload();
+            } else {
+                $('#alert-container').html(
+                    '<div class="alert alert-error">' + response.error + '</div>'
+                );
+            }
+        }
+    });
+}
+</script>
+{% endblock %}

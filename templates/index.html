@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="text-align: center; padding: 50px 0;">
+    <h1 style="color: #667eea; font-size: 48px; margin-bottom: 20px;">🍔🍟 Food Delivery App</h1>
+    <p style="font-size: 18px; color: #666; margin-bottom: 40px;">Fast, reliable food delivery at your doorstep</p>
+    
+    <div style="max-width: 400px; margin: 0 auto;">
+        <a href="{% url 'login' %}" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 18px; margin-bottom: 20px;">
+            Login / Sign Up
+        </a>
+    </div>
+    
+    <div style="margin-top: 60px; display: flex; justify-content: space-around; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 250px; padding: 20px;">
+            <div style="font-size: 48px; margin-bottom: 10px;">☎</div>
+            <h3>Easy Ordering</h3>
+            <p style="color: #666;">Order your favorite food with just a few clicks</p>
+        </div>
+        <div style="flex: 1; min-width: 250px; padding: 20px;">
+            <div style="font-size: 48px; margin-bottom: 10px;">🚚</div>
+            <h3>Fast Delivery</h3>
+            <p style="color: #666;">Track your order in real-time</p>
+        </div>
+        <div style="flex: 1; min-width: 250px; padding: 20px;">
+            <div style="font-size: 48px; margin-bottom: 10px;">💬</div>
+            <h3>Live Chat</h3>
+            <p style="color: #666;">Chat with your delivery partner</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

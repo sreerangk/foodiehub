@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Delivery Partner Dashboard{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Delivery Partner Dashboard</h1>
+    <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
+</div>
+
+<div id="alert-container"></div>
+
+<h2 style="margin-bottom: 20px; color: #333;">Assigned Deliveries</h2>
+
+<div id="bookings-list">
+    {% for booking in bookings %}
+    <div class="booking-card">
+        <div class="booking-header">
+            <div>
+                <h3 style="color: #667eea; margin-bottom: 5px;">Booking #{{ booking.id }}</h3>
+                <span class="status-badge status-{{ booking.status }}">{{ booking.get_status_display }}</span>
+            </div>
+            <div>
+                <a href="{% url 'chat' booking.id %}" class="btn btn-success">💬 Chat</a>
+            </div>
+        </div>
+        
+        <div class="booking-info">
+            <strong>Customer:</strong> {{ booking.customer.username }}
+        </div>
+        <div class="booking-info">
+            <strong>Restaurant:</strong> {{ booking.restaurant_name }}
+        </div>
+        <div class="booking-info">
+            <strong>Items:</strong> {{ booking.items }}
+        </div>
+        <div class="booking-info">
+            <strong>Delivery Address:</strong> {{ booking.delivery_address }}
+        </div>
+        <div class="booking-info">
+            <strong>Amount:</strong> ₹{{ booking.total_amount }}
+        </div>
+        
+        <div style="margin-top: 15px;">
+            {% if booking.status == 'assigned' %}
+            <button class="btn btn-primary" onclick="updateStatus({{ booking.id }}, 'started')">Start Delivery</button>
+            {% elif booking.status == 'started' %}
+            <button class="btn btn-primary" onclick="updateStatus({{ booking.id }}, 'reached')">Reached Restaurant</button>
+            {% elif booking.status == 'reached' %}
+            <button class="btn btn-primary" onclick="updateStatus({{ booking.id }}, 'collected')">Collected Order</button>
+            {% elif booking.status == 'collected' %}
+            <button class="btn btn-success" onclick="updateStatus({{ booking.id }}, 'delivered')">Mark as Delivered</button>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <div class="card" style="text-align: center; padding: 40px;">
+        <p style="color: #999; font-size: 18px;">No deliveries assigned yet.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+function updateStatus(bookingId, status) {
+    $.ajax({
+        url: `/delivery/booking/${bookingId}/update/`,
+        method: 'POST',
+        data: {
+            status: status,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        success: function(response) {
+            if (response.success) {
+                $('#alert-container').html(
+                    '<div class="alert alert-success">' + response.message + '</div>'
+                );
+                location.reload();
+            } else {
+                $('#alert-container').html(
+                    '<div class="alert alert-error">' + response.error + '</div>'
+                );
+            }
+        }
+    });
+}
+</script>
+{% endblock %}

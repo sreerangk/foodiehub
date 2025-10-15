@@ -5,7 +5,7 @@ Django-based food delivery platform with real-time chat, role-based authenticati
 The project is deployed on Render (free tier).  
 **Live URL:** [https://foodiehub-udwc.onrender.com](https://foodiehub-udwc.onrender.com)
 
-*Note: Since this is hosted on Render Free, the first request may take a few seconds to load.*
+*Note: This app is deployed on Render Free. Free services spin down after 15 minutes of inactivity, so the first request may take a few seconds to load while the server wakes up.*
 
 ## Screenshots
 

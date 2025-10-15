@@ -155,6 +155,7 @@ def admin_dashboard(request):
 def assign_delivery_partner(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
     partner_id = request.POST.get('partner_id')
+    print(partner_id)
     
     partner = get_object_or_404(User, id=partner_id, userprofile__role='delivery')
     booking.delivery_partner = partner

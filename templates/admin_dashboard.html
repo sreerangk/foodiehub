@@ -103,7 +103,7 @@ $('#assignForm').on('submit', function(e) {
     const partnerId = $('#partnerId').val();
     
     $.ajax({
-        url: `/admin/booking/${currentBookingId}/assign/`,
+        url: `/booking/${currentBookingId}/assign/`,
         method: 'POST',
         data: {
             partner_id: partnerId,

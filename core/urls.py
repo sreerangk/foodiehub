@@ -17,7 +17,7 @@ urlpatterns = [
     
     # Admin URLs
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
-    path('admin/booking/<int:booking_id>/assign/', views.assign_delivery_partner, name='assign_delivery_partner'),
+    path('booking/<int:booking_id>/assign/', views.assign_delivery_partner, name='assign_delivery_partner'),
     
     # Chat URLs
     path('chat/<int:booking_id>/', views.chat_view, name='chat'),

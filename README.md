@@ -1,6 +1,27 @@
 # Food Delivery Web Application
 
 Django-based food delivery platform with real-time chat, role-based authentication, and booking management.
+## Screenshots
+
+<details>
+<summary>📸 View All Screenshots</summary>
+
+### Customer Interface
+![Customer Login](screenshots/customer-login.png)
+![Customer Dashboard](screenshots/customer-dashboard.png)
+![Create Booking](screenshots/create-booking.png)
+
+### Delivery Partner Interface
+![Delivery Dashboard](screenshots/delivery-dashboard.png)
+
+### Real-Time Features
+![Chat Window](screenshots/chat-window.png)
+
+### Admin Panel
+![Admin Dashboard](screenshots/admin-dashboard.png)
+![Assign Delivery](screenshots/assign-delivery.png)
+
+</details>
 
 ## Features
 

@@ -118,7 +118,7 @@ Access the application at `http://localhost:8000`
 - **Capabilities**: View assigned bookings, update delivery status, chat with customer
 
 #### Admin
-- **Username**: (Created during setup)
+- **Username**: 1111111111
 - **Password**: (Created during setup)
 - **Capabilities**: View all bookings, assign delivery partners
 

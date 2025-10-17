@@ -113,7 +113,7 @@ Access the application at `http://localhost:8000`
 - **Capabilities**: Create bookings, view bookings, cancel bookings, chat with assigned delivery partner
 
 #### Delivery Partner
-- **Mobile**: 9000000000
+- **Mobile**: 9000000000 or 9567077637
 - **Password**: (Set by admin)
 - **Capabilities**: View assigned bookings, update delivery status, chat with customer
 

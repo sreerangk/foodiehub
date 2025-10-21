@@ -37,19 +37,25 @@ def login_view(request):
             user = profile.user
             
             if profile.role != role:
-                return JsonResponse({'success': False, 'error': 'Invalid role for this mobile number'})
+                return JsonResponse({'success': False, 'error': f'This number is registered as {profile.get_role_display()}. Please select the correct role.'})
         except UserProfile.DoesNotExist:
-            # Create new user for customer role
-            if role == 'customer':
-                username = f"user_{mobile}"
-                user = User.objects.create_user(username=username)
-                profile = UserProfile.objects.create(
-                    user=user,
-                    role=role,
-                    mobile=mobile
-                )
-            else:
-                return JsonResponse({'success': False, 'error': 'User not found'})
+            # Auto-register new users for all roles (changed from customer only)
+            username = f"{role}_{mobile}"
+            
+            # Check if username already exists
+            counter = 1
+            original_username = username
+            while User.objects.filter(username=username).exists():
+                username = f"{original_username}_{counter}"
+                counter += 1
+            
+            user = User.objects.create_user(username=username)
+            profile = UserProfile.objects.create(
+                user=user,
+                role=role,
+                mobile=mobile
+            )
+        
         
         login(request, user)
         

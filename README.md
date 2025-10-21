@@ -113,13 +113,13 @@ Access the application at `http://localhost:8000`
 - **Capabilities**: Create bookings, view bookings, cancel bookings, chat with assigned delivery partner
 
 #### Delivery Partner
-- **Mobile**: 9000000000 or 9567077637
-- **Password**: (Set by admin)
+- **Mobile**: 9000000000 (or any 10-digit number)
+- **OTP**: 1234
 - **Capabilities**: View assigned bookings, update delivery status, chat with customer
 
 #### Admin
-- **Username**: 1111111111
-- **Password**: (Created during setup)
+- **Username**: 1111111111 (or any 10-digit number)
+- **Password**: 1234
 - **Capabilities**: View all bookings, assign delivery partners
 
 ## Key Functionalities

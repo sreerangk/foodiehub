@@ -1,6 +1,12 @@
 # Food Delivery Web Application
 
 Django-based food delivery platform with real-time chat, role-based authentication, and booking management.
+
+The project is deployed on Render (free tier).  
+**Live URL:** [https://foodiehub-udwc.onrender.com](https://foodiehub-udwc.onrender.com)
+
+*Note: This app is deployed on Render Free. Free services spin down after 15 minutes of inactivity, so the first request may take a few seconds to load while the server wakes up.*
+
 ## Screenshots
 
 <details>
@@ -107,12 +113,12 @@ Access the application at `http://localhost:8000`
 - **Capabilities**: Create bookings, view bookings, cancel bookings, chat with assigned delivery partner
 
 #### Delivery Partner
-- **Mobile**: 9000000000
+- **Mobile**: 9000000000 or 9567077637
 - **Password**: (Set by admin)
 - **Capabilities**: View assigned bookings, update delivery status, chat with customer
 
 #### Admin
-- **Username**: (Created during setup)
+- **Username**: 1111111111
 - **Password**: (Created during setup)
 - **Capabilities**: View all bookings, assign delivery partners
 
